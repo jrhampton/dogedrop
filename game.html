@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DogeDrop: Crypto Merge</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1 class="title">DOGEDROP</h1>
+    <p class="subtitle">Merge your way from LEO all the way up to Bitcoin</p>
+  </header>
+
+  <div class="hud">
+    <div class="stat">
+      <div class="stat-label">Portfolio Value</div>
+      <div class="stat-value" id="score-value">$0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">All-Time High</div>
+      <div class="stat-value" id="ath-value">$0</div>
+    </div>
+    <button id="mute-btn" type="button">SOUND ON</button>
+  </div>
+
+  <div class="game-stage">
+    <canvas id="game-canvas"></canvas>
+    <div class="game-over" id="game-over">
+      <div class="game-over-panel">
+        <h2>Portfolio Liquidated</h2>
+        <div class="new-ath-badge" id="new-ath-badge">NEW ALL-TIME HIGH</div>
+        <span id="final-score">$0</span>
+        <button id="restart-btn" type="button">Trade Again</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="instructions">
+    Move mouse or <strong>←/→</strong> to aim &middot; click, <strong>Space</strong> or <strong>↓</strong> to drop &middot;
+    merge two matching coins to mint the next one &middot; <strong>M</strong> to mute
+  </p>
+
+  <div class="ladder">
+    <span class="ladder-chip">LEO</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">ZEC</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">DOGE</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">HYPE</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">TRX</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">SOL</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">XRP</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">BNB</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">ETH</span><span class="ladder-arrow">&#8594;</span>
+    <span class="ladder-chip">BTC</span>
+  </div>
+
+  <script src="js/coins.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
