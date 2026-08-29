@@ -2,8 +2,9 @@
  * Boot: wires DOM refs, starts the RAF loop.
  */
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const canvas = document.getElementById('game-canvas');
+  const loading = document.getElementById('loading');
   const dom = {
     scoreValue: document.getElementById('score-value'),
     athValue: document.getElementById('ath-value'),
@@ -13,6 +14,9 @@ window.addEventListener('DOMContentLoaded', () => {
     overlayNewAth: document.getElementById('new-ath-badge'),
     restartBtn: document.getElementById('restart-btn'),
   };
+
+  await preloadCoinImages();
+  if (loading) loading.remove();
 
   const game = new Game(canvas, dom);
   window.__dogedrop = game; // exposed for QA/testing

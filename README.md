@@ -36,12 +36,13 @@ drop, `M` to mute.
 - **No remote code, no CDNs.** Manifest V3 forbids loading remote scripts,
   so everything — physics, audio, rendering — is vendored/hand-written
   and runs from local files only.
-- **Coin art is code-drawn**, not downloaded logo files: each tier is an
-  original `<canvas>` vector illustration built from that project's real
-  brand color and iconic mark (Bitcoin's ₿, Ethereum's diamond, Solana's
-  three bars, Dogecoin's Shiba face, etc.) rather than a bundled
-  third-party image, so it stays crisp at any size with no licensing
-  ambiguity.
+- **Coin art uses each project's real logo** (`assets/coins/`), downloaded
+  once from CoinGecko's public asset CDN and bundled locally — no runtime
+  network fetch. Every tier composites its real logo into a code-drawn
+  metallic coin badge (glow, gradient, bevel, shine) so the ladder still
+  reads as one consistent set as the coins grow. `js/coins.js` preloads
+  all ten before the game starts; if a logo ever fails to load, that tier
+  falls back to a drawn glyph instead of breaking.
 - **Sound is fully synthesized** via the Web Audio API (oscillators +
   gain envelopes, tier-scaled merge chimes, a noise-burst landing thud) —
   no bundled audio files.
@@ -68,6 +69,7 @@ js/storage.js     chrome.storage.local / localStorage wrapper
 js/game.js        Game loop, input, scoring, game-over, rendering
 js/main.js        Boot
 icons/            Toolbar icons (rendered from the game's own Bitcoin coin art)
+assets/coins/     Real project logos (LEO, ZEC, DOGE, HYPE, TRX, SOL, XRP, BNB, ETH, BTC)
 ```
 
 ## Permissions
@@ -75,6 +77,13 @@ icons/            Toolbar icons (rendered from the game's own Bitcoin coin art)
 - `storage` — only permission requested, used solely for the local
   All-Time-High score. No `host_permissions`, no network access, no
   tracking.
+
+## Coin logos
+
+The ten logos in `assets/coins/` are each project's real mark, used to
+identify the actual cryptocurrency it represents — no different from any
+portfolio tracker or price app. This project isn't affiliated with, and
+isn't endorsed by, any of the ten projects shown.
 
 ## Testing
 

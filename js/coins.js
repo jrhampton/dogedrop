@@ -3,26 +3,40 @@
  *
  * Tiers are ordered by real CoinMarketCap rank (stablecoins excluded),
  * ascending from the smallest-cap coin (tier 0) up to Bitcoin (tier 9),
- * captured 2026-08-29. Artwork is code-drawn on <canvas> — original vector
- * shapes evoking each project's real brand color + iconic mark — rather
- * than bundled third-party logo files.
+ * captured 2026-08-29. Each tier's `img` is the project's real logo
+ * (downloaded once from CoinGecko's public asset CDN, bundled locally in
+ * assets/coins/ — no runtime network fetch), composited into a code-drawn
+ * metallic coin badge (glow, gradient, bevel, shine).
  */
 
 const COIN_TIERS = [
-  { symbol: 'LEO',  name: 'UNUS SED LEO', radius: 18, color: '#F4A932', color2: '#8A5A0A', glow: '#FFC65C', value: 2 },
-  { symbol: 'ZEC',  name: 'Zcash',        radius: 24, color: '#F4B728', color2: '#8A6A10', glow: '#FFD65C', value: 4 },
-  { symbol: 'DOGE', name: 'Dogecoin',     radius: 31, color: '#C2A633', color2: '#7A6A1A', glow: '#E8CE6A', value: 8 },
-  { symbol: 'HYPE', name: 'Hyperliquid',  radius: 39, color: '#4FE3C1', color2: '#0B3B36', glow: '#8FFCE4', value: 16 },
-  { symbol: 'TRX',  name: 'TRON',         radius: 48, color: '#EF0027', color2: '#6E0012', glow: '#FF5C77', value: 32 },
-  { symbol: 'SOL',  name: 'Solana',       radius: 58, color: '#9945FF', color2: '#12285C', glow: '#14F195', value: 64 },
-  { symbol: 'XRP',  name: 'XRP',          radius: 69, color: '#25A1E8', color2: '#0C1B2E', glow: '#8FD4FF', value: 128 },
-  { symbol: 'BNB',  name: 'BNB',          radius: 81, color: '#F0B90A', color2: '#5C4400', glow: '#FFE066', value: 256 },
-  { symbol: 'ETH',  name: 'Ethereum',     radius: 94, color: '#627EEA', color2: '#1B2560', glow: '#B4C2FF', value: 512 },
-  { symbol: 'BTC',  name: 'Bitcoin',      radius: 108, color: '#F7931A', color2: '#7A3E00', glow: '#FFC876', value: 1024 },
+  { symbol: 'LEO',  name: 'UNUS SED LEO', radius: 18, color: '#F4A932', color2: '#8A5A0A', glow: '#FFC65C', value: 2, img: 'assets/coins/leo.png' },
+  { symbol: 'ZEC',  name: 'Zcash',        radius: 24, color: '#F4B728', color2: '#8A6A10', glow: '#FFD65C', value: 4, img: 'assets/coins/zec.png' },
+  { symbol: 'DOGE', name: 'Dogecoin',     radius: 31, color: '#C2A633', color2: '#7A6A1A', glow: '#E8CE6A', value: 8, img: 'assets/coins/doge.png' },
+  { symbol: 'HYPE', name: 'Hyperliquid',  radius: 39, color: '#4FE3C1', color2: '#0B3B36', glow: '#8FFCE4', value: 16, img: 'assets/coins/hype.jpg' },
+  { symbol: 'TRX',  name: 'TRON',         radius: 48, color: '#EF0027', color2: '#6E0012', glow: '#FF5C77', value: 32, img: 'assets/coins/trx.png' },
+  { symbol: 'SOL',  name: 'Solana',       radius: 58, color: '#9945FF', color2: '#12285C', glow: '#14F195', value: 64, img: 'assets/coins/sol.png' },
+  { symbol: 'XRP',  name: 'XRP',          radius: 69, color: '#25A1E8', color2: '#0C1B2E', glow: '#8FD4FF', value: 128, img: 'assets/coins/xrp.png' },
+  { symbol: 'BNB',  name: 'BNB',          radius: 81, color: '#F0B90A', color2: '#5C4400', glow: '#FFE066', value: 256, img: 'assets/coins/bnb.png' },
+  { symbol: 'ETH',  name: 'Ethereum',     radius: 94, color: '#627EEA', color2: '#1B2560', glow: '#B4C2FF', value: 512, img: 'assets/coins/eth.png' },
+  { symbol: 'BTC',  name: 'Bitcoin',      radius: 108, color: '#F7931A', color2: '#7A3E00', glow: '#FFC876', value: 1024, img: 'assets/coins/btc.png' },
 ];
 
 const MAX_TIER = COIN_TIERS.length - 1;
 const MAX_DROP_TIER = 4; // only LEO..TRX (tiers 0-4) are droppable
+
+const coinImages = new Array(COIN_TIERS.length).fill(null);
+
+/** Loads every tier's logo image. Resolves once all have settled (loaded or errored). */
+function preloadCoinImages() {
+  const loads = COIN_TIERS.map((tier, i) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => { coinImages[i] = img; resolve(); };
+    img.onerror = () => resolve(); // falls back to the drawn glyph below
+    img.src = tier.img;
+  }));
+  return Promise.all(loads);
+}
 
 function lighten(hex, amt) {
   const n = parseInt(hex.slice(1), 16);
@@ -70,10 +84,20 @@ function drawCoin(ctx, tierIndex, x, y, r, opts = {}) {
   ctx.lineWidth = Math.max(1, r * 0.03);
   ctx.stroke();
 
-  // Symbol
+  // Real project logo, inset as a medallion; falls back to a drawn glyph
+  // if the image hasn't finished loading (or failed to).
+  const logo = coinImages[tierIndex];
   ctx.save();
-  ctx.globalAlpha = 0.96;
-  drawSymbol(ctx, tier.symbol, r);
+  if (logo) {
+    const inset = r * 0.76;
+    ctx.beginPath();
+    ctx.arc(0, 0, inset, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(logo, -inset, -inset, inset * 2, inset * 2);
+  } else {
+    ctx.globalAlpha = 0.96;
+    drawSymbol(ctx, tier.symbol, r);
+  }
   ctx.restore();
 
   // Specular highlight
