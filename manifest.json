@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "DogeDrop: Crypto Merge",
+  "short_name": "DogeDrop",
+  "version": "1.0.0",
+  "description": "Drop and merge cryptocurrencies from LEO all the way up to Bitcoin in this addictive physics puzzle game.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Play DogeDrop"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"]
+}
