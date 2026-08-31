@@ -14,7 +14,9 @@ It's the same code in two forms:
 
 ## Play it
 
-Open `game.html` in a browser, or serve the folder locally:
+**Live:** https://jrhampton.github.io/dogedrop/
+
+Or open `game.html` in a browser, or serve the folder locally:
 
 ```
 npx http-server .
